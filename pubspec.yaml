@@ -1,8 +1,8 @@
 name: search_cep
-description: Package for comunication with via_cep api
-version: 0.0.1
-author:
-homepage:
+description: Package for comunication with via_cep API
+version: 1.0.0
+author: Rodrigo Vasconcelos <rodrigobastosv@gmail.com>
+homepage: https://github.com/rodrigobastosv/connectivity_alert_widget
 
 environment:
   sdk: ">=2.1.0 <3.0.0"

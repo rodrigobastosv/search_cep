@@ -69,6 +69,10 @@ E o retorno do método vai ser uma lista com vários objetos (no máximo 50) Inf
 
 Para mais informações sobre a API e para ajudar a mantê-la atualizada [via_cep][viacep].
 
+## Todo
+
+- [ ] Criar testes
+
 ## Sugestões, Melhorias e Bugs
 
 Para sugerir melhorias ou para apontar algum bug [issue tracker][tracker].

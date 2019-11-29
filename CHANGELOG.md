@@ -1,3 +1,3 @@
-## [0.0.1] - TODO: Add release date.
+## [1.0.0] - Primeira release
 
-* TODO: Describe initial release.
+Primeira release totalmente integrada com a API via_cep 
