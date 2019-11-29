@@ -38,8 +38,7 @@ class SearchCep {
   static Future<CepInfo> searchInfoByCep(
       {String cep, ReturnType returnType = ReturnType.json}) async {
     try {
-      final response =
-          await http.get('$BASE_URL/$cep/${getType(returnType)}');
+      final response = await http.get('$BASE_URL/$cep/${getType(returnType)}');
 
       if (response.statusCode == OK) {
         switch (returnType) {
@@ -134,9 +133,11 @@ class SearchCep {
           case ReturnType.xml:
             return CepInfo.toListXml(response.body);
           case ReturnType.piped:
-            throw Exception('Opção de retorno não implementada para este método');
+            throw Exception(
+                'Opção de retorno não implementada para este método');
           case ReturnType.querty:
-            throw Exception('Opção de retorno não implementada para este método');
+            throw Exception(
+                'Opção de retorno não implementada para este método');
         }
       } else if (response.statusCode == BAD_REQUEST) {
         throw Exception(

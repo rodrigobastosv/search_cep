@@ -1,6 +1,6 @@
 name: search_cep
-description: Package for comunication with via_cep API
-version: 1.0.0
+description: Pacote para facilitar e agilizar a comunicação com a API via_cep e obter informações sobre CEPs e localidades de todo o Brasil
+version: 1.0.1
 author: Rodrigo Vasconcelos <rodrigobastosv@gmail.com>
 homepage: https://github.com/rodrigobastosv/connectivity_alert_widget
 

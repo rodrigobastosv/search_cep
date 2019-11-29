@@ -107,7 +107,8 @@ class CepInfo {
       return [];
     }
     final enderecos = decodedData['enderecos']['endereco'];
-    return List.generate(enderecos.length, (i) => CepInfo.fromJson(enderecos[i]));
+    return List.generate(
+        enderecos.length, (i) => CepInfo.fromJson(enderecos[i]));
   }
 
   @override
