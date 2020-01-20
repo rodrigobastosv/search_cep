@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:search_cep/src/search_cep_error.dart';
 import 'package:xml2json/xml2json.dart' as xml;
 
 import '../search_cep.dart';
@@ -14,8 +15,8 @@ class CepInfo {
   String unidade;
   String ibge;
   String gia;
-  String errorMessage;
-  bool error;
+  bool hasError;
+  SearchCepError searchCepError;
 
   CepInfo(
       {this.cep,
@@ -38,7 +39,7 @@ class CepInfo {
     unidade = json['unidade'];
     ibge = json['ibge'];
     gia = json['gia'];
-    error = false;
+    hasError = false;
   }
 
   CepInfo.fromXml(String content) {
@@ -57,7 +58,7 @@ class CepInfo {
     unidade = decodedData['unidade'];
     ibge = decodedData['ibge'];
     gia = decodedData['gia'];
-    error = false;
+    hasError = false;
   }
 
   CepInfo.fromPiped(String content) {
@@ -72,7 +73,7 @@ class CepInfo {
     unidade = splited[6].split(':')[1];
     ibge = splited[7].split(':')[1];
     gia = splited[8].split(':')[1];
-    error = false;
+    hasError = false;
   }
 
   CepInfo.fromQuerty(String content) {
@@ -87,14 +88,14 @@ class CepInfo {
     unidade = querted[6].split('=')[1];
     ibge = querted[7].split('=')[1];
     gia = querted[8].split('=')[1];
-    error = false;
+    hasError = false;
   }
 
   CepInfo.fromError(ErrorType errorType) {
-    error = true;
-    errorMessage = errorType == ErrorType.invalidCepFormat
+    final errorMessage = errorType == ErrorType.invalidCepFormat
         ? 'CEP com formato inválido'
         : 'CEP com formato válido, porém inexistente na base de dados';
+    searchCepError = SearchCepError(ErrorType.invalidCepFormat, errorMessage);
   }
 
   static List<CepInfo> toListXml(String content) {
@@ -113,6 +114,6 @@ class CepInfo {
 
   @override
   String toString() {
-    return 'CepInfo{cep: $cep, logradouro: $logradouro, complemento: $complemento, bairro: $bairro, localidade: $localidade, uf: $uf, unidade: $unidade, ibge: $ibge, gia: $gia, errorMessage: $errorMessage, error: $error}';
+    return 'CepInfo{cep: $cep, logradouro: $logradouro, complemento: $complemento, bairro: $bairro, localidade: $localidade, uf: $uf, unidade: $unidade, ibge: $ibge, gia: $gia, searchCepError: $searchCepError}';
   }
 }
