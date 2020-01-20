@@ -1,6 +1,6 @@
 name: search_cep
 description: Pacote para facilitar e agilizar a comunicação com a API via_cep e obter informações sobre CEPs e localidades de todo o Brasil
-version: 1.0.2
+version: 1.0.3
 author: Rodrigo Vasconcelos <rodrigobastosv@gmail.com>
 homepage: https://github.com/rodrigobastosv/search_cep
 

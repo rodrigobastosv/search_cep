@@ -23,7 +23,7 @@ void main() async {
 O print do exemplo acima vai ser um objeto no formato indicado abaixo:
 
 ```javascript
-CepInfo{cep: 01001-000, logradouro: Praça da Sé, complemento: lado ímpar, bairro: Sé, localidade: São Paulo, uf: SP, unidade: , ibge: 3550308, gia: 1004, errorMessage: null, error: false}
+CepInfo{cep: 01001-000, logradouro: Praça da Sé, complemento: lado ímpar, bairro: Sé, localidade: São Paulo, uf: SP, unidade: , ibge: 3550308, gia: 1004 hasError: false}
 ```
 
 Um exemplo que pode acontecer é o cep passado pelo usuário ser uma String válida mas pode ser que ele não exista, como
@@ -36,18 +36,18 @@ void main() async {
 }
 ```
 
-Neste caso o objeto CepInfo vai vir com todos os campos de valores nulos e uma mensagem no campo
-`errorMessage` indicando qual erro ocorreu. Além disso o campo `error` do mesmo objeto virá com o
+Neste caso o objeto CepInfo vai vir com todos os campos de valores nulos e um objeto [SearchCepError] populado
+indicando qual erro ocorreu e com um enum de tipo de erro ocorrido. Além disso o campo `hasError` do mesmo objeto virá com o
 valor true, indicando que algum erro ocorreu.
 
 ```javascript
-CepInfo{cep: null, logradouro: null, complemento: null, bairro: null, localidade: null, uf: null, unidade: null, ibge: null, gia: null, errorMessage: CEP com formato válido, porém inexistente na base de dados, error: true}
+CepInfo{cep: null, logradouro: null, complemento: null, bairro: null, localidade: null, uf: null, unidade: null, ibge: null, gia: null, SearchCepError{errorMessage: CEP com formato válido, porém inexistente na base de dados, errorType: ErrorType.nonExistentCep} , hasError: true}
 ```
 
 No caso da String com cep passada não ser válida o objeto InfoCep retornado vai ser equivalente a esse:
 
 ```javascript
-CepInfo{cep: null, logradouro: null, complemento: null, bairro: null, localidade: null, uf: null, unidade: null, ibge: null, gia: null, errorMessage: CEP com formato inválido, error: true}
+CepInfo{cep: null, logradouro: null, complemento: null, bairro: null, localidade: null, uf: null, unidade: null, ibge: null, gia: null, SearchCepError{errorMessage: CEP com formato inválido, errorType: ErrorType.nonExistentCep} , hasError: true}
 ```
 
 Outra forma de pesquisa suportada pela API é a pesquisa por localidades. Um exemplo de pesquisa desta é mostrado abaixo:
