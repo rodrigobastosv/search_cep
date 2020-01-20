@@ -1,3 +1,7 @@
+## 1.0.3
+
+- Atualizando README
+
 ## 1.0.2
 
 - Adicionando objeto de erro na classe [CepInfo]
