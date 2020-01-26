@@ -4,6 +4,7 @@ void main() async {
   final infoCepJSON = await SearchCep.searchInfoByCep(cep: '01001000');
   final infoCepJSON2 = await SearchCep.searchInfoByCep(cep: '99999999');
   final infoCepJSON3 = await SearchCep.searchInfoByCep(cep: '12345');
+  final infoCepJSON4 = await SearchCep.searchInfoByCep(cep: '30000000');
 
   final infoCepXML = await SearchCep.searchInfoByCep(
       cep: '01001000', returnType: ReturnType.xml);
@@ -34,6 +35,8 @@ void main() async {
   print(infoCepJSON);
   print(infoCepJSON2.searchCepError);
   print(infoCepJSON3.searchCepError);
+  print(infoCepJSON4);
+
   print(infoCepXML);
   print(infoCepXML2.searchCepError);
   print(infoCepPiped);

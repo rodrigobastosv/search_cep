@@ -1,3 +1,7 @@
+## 1.0.4
+
+- Bugfix #2 (https://github.com/rodrigobastosv/search_cep/issues/2)
+
 ## 1.0.3
 
 - Atualizando README

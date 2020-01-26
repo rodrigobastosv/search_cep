@@ -95,7 +95,7 @@ class CepInfo {
     final errorMessage = errorType == ErrorType.invalidCepFormat
         ? 'CEP com formato inválido'
         : 'CEP com formato válido, porém inexistente na base de dados';
-    searchCepError = SearchCepError(ErrorType.invalidCepFormat, errorMessage);
+    searchCepError = SearchCepError(errorType, errorMessage);
   }
 
   static List<CepInfo> toListXml(String content) {
