@@ -4,7 +4,6 @@ import 'package:http/http.dart' as http;
 
 import 'postmon_cep_info.dart';
 
-enum ErrorType { invalidCepFormat, nonExistentCep }
 enum PostmonReturnType { json, xml }
 
 class PostmonSearchCep {
@@ -58,14 +57,4 @@ class PostmonSearchCep {
       throw Exception('Erro na comunicação com a API postmon');
     }
   }
-}
-
-String getType(PostmonReturnType returnType) {
-  switch (returnType) {
-    case PostmonReturnType.json:
-      return 'json';
-    case PostmonReturnType.xml:
-      return 'xml';
-  }
-  return 'json';
 }
