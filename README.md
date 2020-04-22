@@ -113,7 +113,10 @@ Para mais informações sobre a API e para ajudar a mantê-la atualizada [via_ce
 ## API Postmon  
   
 Para mais informações sobre a API e para ajudar a mantê-la atualizada [Postmon][postmon].  
-  
+
+## Breaking Changes
+- 1.0.4 - 2.0.0: A versão 2.0.0 passa a separar os métodos para permitir compatibilidade com a API do Postmon. Ficando a cargo do usuário escolher qual API utilizar.
+
 ## Todo  
   
 - [ ] Criar testes  
