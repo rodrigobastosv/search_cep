@@ -1,10 +1,10 @@
 import 'package:search_cep/search_cep.dart';
 
-class SearchCepError {
+class ViaCepSearchCepError {
   ErrorType errorType;
   String errorMessage;
 
-  SearchCepError(this.errorType, this.errorMessage);
+  ViaCepSearchCepError(this.errorType, this.errorMessage);
 
   @override
   String toString() {

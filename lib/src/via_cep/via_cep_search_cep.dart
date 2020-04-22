@@ -2,12 +2,12 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-import 'cep_info.dart';
+import 'via_cep_cep_info.dart';
 
 enum ErrorType { invalidCepFormat, nonExistentCep }
 enum ReturnType { json, xml, piped, querty }
 
-class SearchCep {
+class ViaCepSearchCep {
   static const String BASE_URL = 'https://viacep.com.br/ws';
   static const int OK = 200;
   static const int BAD_REQUEST = 400;
@@ -35,7 +35,7 @@ class SearchCep {
   /// e um campo com a mensagem descrevendo o erro na propriedade
   /// [CepInfo.errorMessage].
   ///
-  static Future<CepInfo> searchInfoByCep(
+  static Future<ViaCepCepInfo> searchInfoByCep(
       {String cep, ReturnType returnType = ReturnType.json}) async {
     try {
       final response = await http.get('$BASE_URL/$cep/${getType(returnType)}');
@@ -45,30 +45,30 @@ class SearchCep {
           case ReturnType.json:
             final decodedResponse = jsonDecode(response.body);
             if (decodedResponse['erro'] == true) {
-              return CepInfo.fromError(ErrorType.nonExistentCep);
+              return ViaCepCepInfo.fromError(ErrorType.nonExistentCep);
             }
-            return CepInfo.fromJson(decodedResponse);
+            return ViaCepCepInfo.fromJson(decodedResponse);
           case ReturnType.xml:
             final body = response.body;
             if (body.contains('erro')) {
-              return CepInfo.fromError(ErrorType.nonExistentCep);
+              return ViaCepCepInfo.fromError(ErrorType.nonExistentCep);
             }
-            return CepInfo.fromXml(body);
+            return ViaCepCepInfo.fromXml(body);
           case ReturnType.piped:
             final body = response.body;
             if (body.contains('erro')) {
-              return CepInfo.fromError(ErrorType.nonExistentCep);
+              return ViaCepCepInfo.fromError(ErrorType.nonExistentCep);
             }
-            return CepInfo.fromPiped(body);
+            return ViaCepCepInfo.fromPiped(body);
           case ReturnType.querty:
             final body = response.body;
             if (body.contains('erro')) {
-              return CepInfo.fromError(ErrorType.nonExistentCep);
+              return ViaCepCepInfo.fromError(ErrorType.nonExistentCep);
             }
-            return CepInfo.fromQuerty(body);
+            return ViaCepCepInfo.fromQuerty(body);
         }
       } else if (response.statusCode == BAD_REQUEST) {
-        return CepInfo.fromError(ErrorType.invalidCepFormat);
+        return ViaCepCepInfo.fromError(ErrorType.invalidCepFormat);
       }
       return null;
     } catch (e) {
@@ -115,7 +115,7 @@ class SearchCep {
   /// Quando o nome da cidade ou do logradouro não contiver ao menos três
   /// caracteres uma exceção será lançada.
   ///
-  static Future<List<CepInfo>> searchForCeps(
+  static Future<List<ViaCepCepInfo>> searchForCeps(
       {String uf,
       String cidade,
       String logradouro,
@@ -128,10 +128,10 @@ class SearchCep {
         switch (returnType) {
           case ReturnType.json:
             final listInfo = jsonDecode(response.body);
-            return List.generate(
-                listInfo.length, (int i) => CepInfo.fromJson(listInfo[i]));
+            return List.generate(listInfo.length,
+                (int i) => ViaCepCepInfo.fromJson(listInfo[i]));
           case ReturnType.xml:
-            return CepInfo.toListXml(response.body);
+            return ViaCepCepInfo.toListXml(response.body);
           case ReturnType.piped:
             throw Exception(
                 'Opção de retorno não implementada para este método');

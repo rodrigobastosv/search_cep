@@ -1,5 +1,5 @@
 library search_cep;
 
-export 'src/cep_info.dart';
-export 'src/search_cep.dart';
-export 'src/search_cep_error.dart';
+export 'src/via_cep/via_cep_cep_info.dart';
+export 'src/via_cep/via_cep_search_cep.dart';
+export 'src/via_cep/via_cep_search_cep_error.dart';

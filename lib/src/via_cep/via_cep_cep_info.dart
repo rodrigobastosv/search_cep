@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-import 'package:search_cep/src/search_cep_error.dart';
+import 'package:search_cep/src/via_cep/via_cep_search_cep_error.dart';
 import 'package:xml2json/xml2json.dart' as xml;
 
-import '../search_cep.dart';
+import '../../search_cep.dart';
 
-class CepInfo {
+class ViaCepCepInfo {
   String cep;
   String logradouro;
   String complemento;
@@ -16,9 +16,9 @@ class CepInfo {
   String ibge;
   String gia;
   bool hasError;
-  SearchCepError searchCepError;
+  ViaCepSearchCepError searchCepError;
 
-  CepInfo(
+  ViaCepCepInfo(
       {this.cep,
       this.logradouro,
       this.complemento,
@@ -29,7 +29,7 @@ class CepInfo {
       this.ibge,
       this.gia});
 
-  CepInfo.fromJson(Map<String, dynamic> json) {
+  ViaCepCepInfo.fromJson(Map<String, dynamic> json) {
     cep = json['cep'];
     logradouro = json['logradouro'];
     complemento = json['complemento'];
@@ -42,7 +42,7 @@ class CepInfo {
     hasError = false;
   }
 
-  CepInfo.fromXml(String content) {
+  ViaCepCepInfo.fromXml(String content) {
     xml.Xml2Json myTransformer = xml.Xml2Json();
     myTransformer.parse(content);
     content = myTransformer.toParker();
@@ -61,7 +61,7 @@ class CepInfo {
     hasError = false;
   }
 
-  CepInfo.fromPiped(String content) {
+  ViaCepCepInfo.fromPiped(String content) {
     final splited = content.split('|');
 
     cep = splited[0].split(':')[1];
@@ -76,7 +76,7 @@ class CepInfo {
     hasError = false;
   }
 
-  CepInfo.fromQuerty(String content) {
+  ViaCepCepInfo.fromQuerty(String content) {
     final querted = content.replaceAll('+', ' ').split('&');
 
     cep = querted[0].split('=')[1];
@@ -91,14 +91,15 @@ class CepInfo {
     hasError = false;
   }
 
-  CepInfo.fromError(ErrorType errorType) {
+  ViaCepCepInfo.fromError(ErrorType errorType) {
     final errorMessage = errorType == ErrorType.invalidCepFormat
         ? 'CEP com formato inválido'
         : 'CEP com formato válido, porém inexistente na base de dados';
-    searchCepError = SearchCepError(errorType, errorMessage);
+    searchCepError = ViaCepSearchCepError(errorType, errorMessage);
+    hasError = true;
   }
 
-  static List<CepInfo> toListXml(String content) {
+  static List<ViaCepCepInfo> toListXml(String content) {
     xml.Xml2Json myTransformer = xml.Xml2Json();
     myTransformer.parse(content);
     content = myTransformer.toParker();
@@ -109,7 +110,7 @@ class CepInfo {
     }
     final enderecos = decodedData['enderecos']['endereco'];
     return List.generate(
-        enderecos.length, (i) => CepInfo.fromJson(enderecos[i]));
+        enderecos.length, (i) => ViaCepCepInfo.fromJson(enderecos[i]));
   }
 
   @override
