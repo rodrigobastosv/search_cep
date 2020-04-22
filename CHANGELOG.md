@@ -1,3 +1,7 @@
+## 2.0.1
+
+- Exportando arquivos
+
 ## 2.0.0
 
 - Adicionando suporte a api do POSTMON como segunda opção de pesquisa
