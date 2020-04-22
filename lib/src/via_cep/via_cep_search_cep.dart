@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-import 'via_cep_cep_info.dart';
+import 'via_cep_info.dart';
 
 enum ErrorType { invalidCepFormat, nonExistentCep }
 enum ReturnType { json, xml, piped, querty }
@@ -18,24 +18,24 @@ class ViaCepSearchCep {
   /// querty. Se não escolhido nenhum tipo de retorno o default será json.
   ///
   /// Quando consultado um CEP de formato válido, por exemplo: "01001000" o
-  /// método vai retornar um objeto [CepInfo] com todas as propriedades que
+  /// método vai retornar um objeto [ViaCepCepInfo] com todas as propriedades que
   /// foram encontradas setadas.
   ///
   /// Quando consultado um CEP de formato inválido, por exemplo: "950100100"
   /// (9 dígitos), "95010A10" (alfanumérico), "95010 10" (espaço), o código de
   /// retorno da consulta será um 400 (Bad Request), o retorno conterá um
-  /// objeto [CepInfo] com todos os campos de valores nulos, a propriedade
-  /// [CepInfo.error] setata com true  e um campo com a mensagem descrevendo o
-  /// erro na propriedade [CepInfo.errorMessage]. Antes de acessar o webservice,
+  /// objeto [ViaCepCepInfo] com todos os campos de valores nulos, a propriedade
+  /// [ViaCepCepInfo.error] setata com true  e um campo com a mensagem descrevendo o
+  /// erro na propriedade [ViaCepCepInfo.errorMessage]. Antes de acessar o webservice,
   /// valide o formato do CEP e certifique-se que o mesmo possua {8} dígitos.
   ///
   /// Quando consultado um CEP de formato válido, porém inexistente, por
-  /// exemplo: "99999999", o retorno conterá um objeto [CepInfo] com todos os
-  /// campos de valores nulos, a propriedade [CepInfo.error] setata com true
+  /// exemplo: "99999999", o retorno conterá um objeto [ViaCepCepInfo] com todos os
+  /// campos de valores nulos, a propriedade [ViaCepCepInfo.error] setata com true
   /// e um campo com a mensagem descrevendo o erro na propriedade
-  /// [CepInfo.errorMessage].
+  /// [ViaCepCepInfo.errorMessage].
   ///
-  static Future<ViaCepCepInfo> searchInfoByCep(
+  static Future<ViaCepInfo> searchInfoByCep(
       {String cep, ReturnType returnType = ReturnType.json}) async {
     try {
       final response = await http.get('$BASE_URL/$cep/${getType(returnType)}');
@@ -45,30 +45,30 @@ class ViaCepSearchCep {
           case ReturnType.json:
             final decodedResponse = jsonDecode(response.body);
             if (decodedResponse['erro'] == true) {
-              return ViaCepCepInfo.fromError(ErrorType.nonExistentCep);
+              return ViaCepInfo.fromError(ErrorType.nonExistentCep);
             }
-            return ViaCepCepInfo.fromJson(decodedResponse);
+            return ViaCepInfo.fromJson(decodedResponse);
           case ReturnType.xml:
             final body = response.body;
             if (body.contains('erro')) {
-              return ViaCepCepInfo.fromError(ErrorType.nonExistentCep);
+              return ViaCepInfo.fromError(ErrorType.nonExistentCep);
             }
-            return ViaCepCepInfo.fromXml(body);
+            return ViaCepInfo.fromXml(body);
           case ReturnType.piped:
             final body = response.body;
             if (body.contains('erro')) {
-              return ViaCepCepInfo.fromError(ErrorType.nonExistentCep);
+              return ViaCepInfo.fromError(ErrorType.nonExistentCep);
             }
-            return ViaCepCepInfo.fromPiped(body);
+            return ViaCepInfo.fromPiped(body);
           case ReturnType.querty:
             final body = response.body;
             if (body.contains('erro')) {
-              return ViaCepCepInfo.fromError(ErrorType.nonExistentCep);
+              return ViaCepInfo.fromError(ErrorType.nonExistentCep);
             }
-            return ViaCepCepInfo.fromQuerty(body);
+            return ViaCepInfo.fromQuerty(body);
         }
       } else if (response.statusCode == BAD_REQUEST) {
-        return ViaCepCepInfo.fromError(ErrorType.invalidCepFormat);
+        return ViaCepInfo.fromError(ErrorType.invalidCepFormat);
       }
       return null;
     } catch (e) {
@@ -115,7 +115,7 @@ class ViaCepSearchCep {
   /// Quando o nome da cidade ou do logradouro não contiver ao menos três
   /// caracteres uma exceção será lançada.
   ///
-  static Future<List<ViaCepCepInfo>> searchForCeps(
+  static Future<List<ViaCepInfo>> searchForCeps(
       {String uf,
       String cidade,
       String logradouro,
@@ -128,10 +128,10 @@ class ViaCepSearchCep {
         switch (returnType) {
           case ReturnType.json:
             final listInfo = jsonDecode(response.body);
-            return List.generate(listInfo.length,
-                (int i) => ViaCepCepInfo.fromJson(listInfo[i]));
+            return List.generate(
+                listInfo.length, (int i) => ViaCepInfo.fromJson(listInfo[i]));
           case ReturnType.xml:
-            return ViaCepCepInfo.toListXml(response.body);
+            return ViaCepInfo.toListXml(response.body);
           case ReturnType.piped:
             throw Exception(
                 'Opção de retorno não implementada para este método');

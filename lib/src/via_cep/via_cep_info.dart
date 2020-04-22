@@ -5,7 +5,7 @@ import 'package:xml2json/xml2json.dart' as xml;
 
 import '../../search_cep.dart';
 
-class ViaCepCepInfo {
+class ViaCepInfo {
   String cep;
   String logradouro;
   String complemento;
@@ -18,7 +18,7 @@ class ViaCepCepInfo {
   bool hasError;
   ViaCepSearchCepError searchCepError;
 
-  ViaCepCepInfo(
+  ViaCepInfo(
       {this.cep,
       this.logradouro,
       this.complemento,
@@ -29,7 +29,7 @@ class ViaCepCepInfo {
       this.ibge,
       this.gia});
 
-  ViaCepCepInfo.fromJson(Map<String, dynamic> json) {
+  ViaCepInfo.fromJson(Map<String, dynamic> json) {
     cep = json['cep'];
     logradouro = json['logradouro'];
     complemento = json['complemento'];
@@ -42,7 +42,7 @@ class ViaCepCepInfo {
     hasError = false;
   }
 
-  ViaCepCepInfo.fromXml(String content) {
+  ViaCepInfo.fromXml(String content) {
     xml.Xml2Json myTransformer = xml.Xml2Json();
     myTransformer.parse(content);
     content = myTransformer.toParker();
@@ -61,7 +61,7 @@ class ViaCepCepInfo {
     hasError = false;
   }
 
-  ViaCepCepInfo.fromPiped(String content) {
+  ViaCepInfo.fromPiped(String content) {
     final splited = content.split('|');
 
     cep = splited[0].split(':')[1];
@@ -76,7 +76,7 @@ class ViaCepCepInfo {
     hasError = false;
   }
 
-  ViaCepCepInfo.fromQuerty(String content) {
+  ViaCepInfo.fromQuerty(String content) {
     final querted = content.replaceAll('+', ' ').split('&');
 
     cep = querted[0].split('=')[1];
@@ -91,7 +91,7 @@ class ViaCepCepInfo {
     hasError = false;
   }
 
-  ViaCepCepInfo.fromError(ErrorType errorType) {
+  ViaCepInfo.fromError(ErrorType errorType) {
     final errorMessage = errorType == ErrorType.invalidCepFormat
         ? 'CEP com formato inválido'
         : 'CEP com formato válido, porém inexistente na base de dados';
@@ -99,7 +99,7 @@ class ViaCepCepInfo {
     hasError = true;
   }
 
-  static List<ViaCepCepInfo> toListXml(String content) {
+  static List<ViaCepInfo> toListXml(String content) {
     xml.Xml2Json myTransformer = xml.Xml2Json();
     myTransformer.parse(content);
     content = myTransformer.toParker();
@@ -110,11 +110,11 @@ class ViaCepCepInfo {
     }
     final enderecos = decodedData['enderecos']['endereco'];
     return List.generate(
-        enderecos.length, (i) => ViaCepCepInfo.fromJson(enderecos[i]));
+        enderecos.length, (i) => ViaCepInfo.fromJson(enderecos[i]));
   }
 
   @override
   String toString() {
-    return 'CepInfo{cep: $cep, logradouro: $logradouro, complemento: $complemento, bairro: $bairro, localidade: $localidade, uf: $uf, unidade: $unidade, ibge: $ibge, gia: $gia, searchCepError: $searchCepError}';
+    return 'ViaCepInfo{cep: $cep, logradouro: $logradouro, complemento: $complemento, bairro: $bairro, localidade: $localidade, uf: $uf, unidade: $unidade, ibge: $ibge, gia: $gia, searchCepError: $searchCepError}';
   }
 }
