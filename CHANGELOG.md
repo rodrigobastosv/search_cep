@@ -1,3 +1,7 @@
+## 2.0.1+1
+- Atualizando dependências
+- Melhorando a documentação
+
 ## 2.0.1
 
 - Exportando arquivos

@@ -8,8 +8,13 @@ enum ErrorType { invalidCepFormat, nonExistentCep }
 enum ReturnType { json, xml, piped, querty }
 
 class ViaCepSearchCep {
+  /// URL base do webservice via_cep
   static const String BASE_URL = 'https://viacep.com.br/ws';
+
+  /// Constante para resposta OK do servidor
   static const int OK = 200;
+
+  /// Constante para resposta com erro do servidor
   static const int BAD_REQUEST = 400;
 
   /// Envia uma request GET para a API do via_cep enviando uma [String] com cep
@@ -150,6 +155,7 @@ class ViaCepSearchCep {
   }
 }
 
+/// Precisamos mapear o enum de retorno com a string que a API recebe
 String getType(ReturnType returnType) {
   switch (returnType) {
     case ReturnType.json:
