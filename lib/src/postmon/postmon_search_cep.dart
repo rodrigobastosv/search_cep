@@ -1,6 +1,9 @@
 import 'dart:convert';
 
+import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
+import 'package:meta/meta.dart';
+import 'package:search_cep/src/errors/errors.dart';
 
 import 'postmon_cep_info.dart';
 
@@ -33,9 +36,13 @@ class PostmonSearchCep {
   /// objeto [PostmonCepInfo] com todos os campos de valores nulos, a propriedade
   /// [PostmonCepInfo.error] setata com true  e um campo com a mensagem descrevendo o
   /// erro na propriedade [PostmonCepInfo.errorMessage].
-  static Future<PostmonCepInfo> searchInfoByCep(
-      {String cep,
-      PostmonReturnType returnType = PostmonReturnType.json}) async {
+  static Future<Either<SearchCepError, PostmonCepInfo>> searchInfoByCep({
+    @required String cep,
+    PostmonReturnType returnType = PostmonReturnType.json,
+  }) async {
+    if (cep == null || cep.isEmpty || cep.length != 8) {
+      return left(InvalidFormatError());
+    }
     try {
       final response = await http.get(
           '$BASE_URL/$cep${returnType == PostmonReturnType.xml ? '?format=xml' : ''}');
@@ -44,17 +51,15 @@ class PostmonSearchCep {
         switch (returnType) {
           case PostmonReturnType.json:
             final decodedResponse = jsonDecode(response.body);
-            return PostmonCepInfo.fromJson(decodedResponse);
+            return right(PostmonCepInfo.fromJson(decodedResponse));
           case PostmonReturnType.xml:
             final body = response.body;
-            return PostmonCepInfo.fromXml(body);
+            return right(PostmonCepInfo.fromXml(body));
         }
-      } else if (response.statusCode == BAD_REQUEST) {
-        return PostmonCepInfo.fromError();
       }
-      return null;
+      return left(InvalidCepError());
     } catch (e) {
-      throw Exception('Erro na comunicação com a API postmon');
+      return left(NetworkError());
     }
   }
 }
