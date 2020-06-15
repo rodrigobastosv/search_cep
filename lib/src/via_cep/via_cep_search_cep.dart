@@ -1,10 +1,11 @@
 import 'dart:convert';
 
+import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
+import 'package:search_cep/src/errors/errors.dart';
 
 import 'via_cep_info.dart';
 
-enum ErrorType { invalidCepFormat, nonExistentCep }
 enum ReturnType { json, xml, piped, querty }
 
 class ViaCepSearchCep {
@@ -40,7 +41,7 @@ class ViaCepSearchCep {
   /// e um campo com a mensagem descrevendo o erro na propriedade
   /// [ViaCepCepInfo.errorMessage].
   ///
-  static Future<ViaCepInfo> searchInfoByCep(
+  static Future<Either<SearchCepError, ViaCepInfo>> searchInfoByCep(
       {String cep, ReturnType returnType = ReturnType.json}) async {
     try {
       final response = await http.get('$BASE_URL/$cep/${getType(returnType)}');
@@ -50,34 +51,34 @@ class ViaCepSearchCep {
           case ReturnType.json:
             final decodedResponse = jsonDecode(response.body);
             if (decodedResponse['erro'] == true) {
-              return ViaCepInfo.fromError(ErrorType.nonExistentCep);
+              return left(InvalidCepError());
             }
-            return ViaCepInfo.fromJson(decodedResponse);
+            return right(ViaCepInfo.fromJson(decodedResponse));
           case ReturnType.xml:
             final body = response.body;
             if (body.contains('erro')) {
-              return ViaCepInfo.fromError(ErrorType.nonExistentCep);
+              return left(InvalidCepError());
             }
-            return ViaCepInfo.fromXml(body);
+            return right(ViaCepInfo.fromXml(body));
           case ReturnType.piped:
             final body = response.body;
             if (body.contains('erro')) {
-              return ViaCepInfo.fromError(ErrorType.nonExistentCep);
+              return left(InvalidCepError());
             }
-            return ViaCepInfo.fromPiped(body);
+            return right(ViaCepInfo.fromPiped(body));
           case ReturnType.querty:
             final body = response.body;
             if (body.contains('erro')) {
-              return ViaCepInfo.fromError(ErrorType.nonExistentCep);
+              return left(InvalidCepError());
             }
-            return ViaCepInfo.fromQuerty(body);
+            return right(ViaCepInfo.fromQuerty(body));
         }
       } else if (response.statusCode == BAD_REQUEST) {
-        return ViaCepInfo.fromError(ErrorType.invalidCepFormat);
+        return left(InvalidFormatError());
       }
       return null;
     } catch (e) {
-      throw Exception('Erro na comunicação com a API via_cep');
+      throw NetworkError();
     }
   }
 
@@ -120,11 +121,12 @@ class ViaCepSearchCep {
   /// Quando o nome da cidade ou do logradouro não contiver ao menos três
   /// caracteres uma exceção será lançada.
   ///
-  static Future<List<ViaCepInfo>> searchForCeps(
-      {String uf,
-      String cidade,
-      String logradouro,
-      ReturnType returnType = ReturnType.json}) async {
+  static Future<Either<SearchCepError, List<ViaCepInfo>>> searchForCeps({
+    String uf,
+    String cidade,
+    String logradouro,
+    ReturnType returnType = ReturnType.json,
+  }) async {
     try {
       final response = await http
           .get('$BASE_URL/$uf/$cidade/$logradouro/${getType(returnType)}');
@@ -133,24 +135,22 @@ class ViaCepSearchCep {
         switch (returnType) {
           case ReturnType.json:
             final listInfo = jsonDecode(response.body);
-            return List.generate(
-                listInfo.length, (int i) => ViaCepInfo.fromJson(listInfo[i]));
+            return right(List.generate(
+                listInfo.length, (int i) => ViaCepInfo.fromJson(listInfo[i])));
           case ReturnType.xml:
-            return ViaCepInfo.toListXml(response.body);
+            return right(ViaCepInfo.toListXml(response.body));
           case ReturnType.piped:
-            throw Exception(
-                'Opção de retorno não implementada para este método');
+            return left(SearchCepError(
+                'Opção de retorno não implementada para este método'));
           case ReturnType.querty:
-            throw Exception(
-                'Opção de retorno não implementada para este método');
+            return left(SearchCepError(
+                'Opção de retorno não implementada para este método'));
         }
-      } else if (response.statusCode == BAD_REQUEST) {
-        throw Exception(
-            'Nome da cidade e logradouro tem que ter ao menos três caracteres');
       }
-      return null;
+      return left(InvalidFormatError(
+          'Nome da cidade e logradouro tem que ter ao menos três caracteres'));
     } catch (e) {
-      throw Exception(e.toString());
+      return left(NetworkError(e.toString()));
     }
   }
 }

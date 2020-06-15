@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
+import 'package:search_cep/src/errors/errors.dart';
 
 import 'postmon_cep_info.dart';
 
@@ -33,7 +35,7 @@ class PostmonSearchCep {
   /// objeto [PostmonCepInfo] com todos os campos de valores nulos, a propriedade
   /// [PostmonCepInfo.error] setata com true  e um campo com a mensagem descrevendo o
   /// erro na propriedade [PostmonCepInfo.errorMessage].
-  static Future<PostmonCepInfo> searchInfoByCep(
+  static Future<Either<SearchCepError, PostmonCepInfo>> searchInfoByCep(
       {String cep,
       PostmonReturnType returnType = PostmonReturnType.json}) async {
     try {
@@ -44,17 +46,17 @@ class PostmonSearchCep {
         switch (returnType) {
           case PostmonReturnType.json:
             final decodedResponse = jsonDecode(response.body);
-            return PostmonCepInfo.fromJson(decodedResponse);
+            return right(PostmonCepInfo.fromJson(decodedResponse));
           case PostmonReturnType.xml:
             final body = response.body;
-            return PostmonCepInfo.fromXml(body);
+            return right(PostmonCepInfo.fromXml(body));
         }
       } else if (response.statusCode == BAD_REQUEST) {
-        return PostmonCepInfo.fromError();
+        return left(InvalidCepError());
       }
       return null;
     } catch (e) {
-      throw Exception('Erro na comunicação com a API postmon');
+      return left(NetworkError());
     }
   }
 }

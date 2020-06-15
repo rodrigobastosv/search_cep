@@ -1,9 +1,6 @@
 import 'dart:convert';
 
-import 'package:search_cep/src/via_cep/via_cep_search_cep_error.dart';
 import 'package:xml2json/xml2json.dart' as xml;
-
-import '../../search_cep.dart';
 
 class ViaCepInfo {
   String cep;
@@ -15,8 +12,6 @@ class ViaCepInfo {
   String unidade;
   String ibge;
   String gia;
-  bool hasError;
-  ViaCepSearchCepError searchCepError;
 
   ViaCepInfo(
       {this.cep,
@@ -39,7 +34,6 @@ class ViaCepInfo {
     unidade = json['unidade'];
     ibge = json['ibge'];
     gia = json['gia'];
-    hasError = false;
   }
 
   ViaCepInfo.fromXml(String content) {
@@ -58,7 +52,6 @@ class ViaCepInfo {
     unidade = decodedData['unidade'];
     ibge = decodedData['ibge'];
     gia = decodedData['gia'];
-    hasError = false;
   }
 
   ViaCepInfo.fromPiped(String content) {
@@ -73,7 +66,6 @@ class ViaCepInfo {
     unidade = splited[6].split(':')[1];
     ibge = splited[7].split(':')[1];
     gia = splited[8].split(':')[1];
-    hasError = false;
   }
 
   ViaCepInfo.fromQuerty(String content) {
@@ -88,15 +80,6 @@ class ViaCepInfo {
     unidade = querted[6].split('=')[1];
     ibge = querted[7].split('=')[1];
     gia = querted[8].split('=')[1];
-    hasError = false;
-  }
-
-  ViaCepInfo.fromError(ErrorType errorType) {
-    final errorMessage = errorType == ErrorType.invalidCepFormat
-        ? 'CEP com formato inválido'
-        : 'CEP com formato válido, porém inexistente na base de dados';
-    searchCepError = ViaCepSearchCepError(errorType, errorMessage);
-    hasError = true;
   }
 
   static List<ViaCepInfo> toListXml(String content) {
@@ -115,6 +98,6 @@ class ViaCepInfo {
 
   @override
   String toString() {
-    return 'ViaCepInfo{cep: $cep, logradouro: $logradouro, complemento: $complemento, bairro: $bairro, localidade: $localidade, uf: $uf, unidade: $unidade, ibge: $ibge, gia: $gia, searchCepError: $searchCepError}';
+    return 'ViaCepInfo{cep: $cep, logradouro: $logradouro, complemento: $complemento, bairro: $bairro, localidade: $localidade, uf: $uf, unidade: $unidade, ibge: $ibge, gia: $gia}';
   }
 }

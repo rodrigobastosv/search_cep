@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:search_cep/src/postmon/postmon_search_cep_error.dart';
 import 'package:xml2json/xml2json.dart' as xml;
 
 class PostmonCepInfo {
@@ -11,8 +10,6 @@ class PostmonCepInfo {
   String cep;
   CidadeInfo cidadeInfo;
   String estado;
-  bool hasError;
-  PostmonSearchCepError postmonSearchCepError;
 
   PostmonCepInfo(
       {this.bairro,
@@ -35,7 +32,6 @@ class PostmonCepInfo {
         ? new CidadeInfo.fromJson(json['cidade_info'])
         : null;
     estado = json['estado'];
-    hasError = false;
   }
 
   PostmonCepInfo.fromXml(String content) {
@@ -52,17 +48,11 @@ class PostmonCepInfo {
     estado = decodedData['estado'];
     estadoInfo = EstadoInfo.fromJson(decodedData['estado_info']);
     cidadeInfo = CidadeInfo.fromJson(decodedData['cidade_info']);
-    hasError = false;
-  }
-
-  PostmonCepInfo.fromError() {
-    postmonSearchCepError = PostmonSearchCepError('CEP não encontrado');
-    hasError = true;
   }
 
   @override
   String toString() {
-    return 'PostmonCepInfo{bairro: $bairro, cidade: $cidade, logradouro: $logradouro, estadoInfo: $estadoInfo, cep: $cep, cidadeInfo: $cidadeInfo, estado: $estado, hasError: $hasError, postmonSearchCepError: $postmonSearchCepError}';
+    return 'PostmonCepInfo{bairro: $bairro, cidade: $cidade, logradouro: $logradouro, estadoInfo: $estadoInfo, cep: $cep, cidadeInfo: $cidadeInfo, estado: $estado}';
   }
 }
 
