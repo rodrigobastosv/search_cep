@@ -2,11 +2,13 @@ import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
+import 'package:meta/meta.dart';
 import 'package:search_cep/src/errors/errors.dart';
 
 import 'via_cep_info.dart';
 
-enum ReturnType { json, xml, piped, querty }
+enum SearchInfoType { json, xml, piped, querty }
+enum SearchCepsType { json, xml }
 
 class ViaCepSearchCep {
   /// URL base do webservice via_cep
@@ -41,32 +43,37 @@ class ViaCepSearchCep {
   /// e um campo com a mensagem descrevendo o erro na propriedade
   /// [ViaCepCepInfo.errorMessage].
   ///
-  static Future<Either<SearchCepError, ViaCepInfo>> searchInfoByCep(
-      {String cep, ReturnType returnType = ReturnType.json}) async {
+  static Future<Either<SearchCepError, ViaCepInfo>> searchInfoByCep({
+    String cep,
+    SearchInfoType returnType = SearchInfoType.json,
+  }) async {
+    if (cep == null || cep.isEmpty || cep.length != 8) {
+      return left(InvalidFormatError());
+    }
     try {
       final response = await http.get('$BASE_URL/$cep/${getType(returnType)}');
 
       if (response.statusCode == OK) {
         switch (returnType) {
-          case ReturnType.json:
+          case SearchInfoType.json:
             final decodedResponse = jsonDecode(response.body);
             if (decodedResponse['erro'] == true) {
               return left(InvalidCepError());
             }
             return right(ViaCepInfo.fromJson(decodedResponse));
-          case ReturnType.xml:
+          case SearchInfoType.xml:
             final body = response.body;
             if (body.contains('erro')) {
               return left(InvalidCepError());
             }
             return right(ViaCepInfo.fromXml(body));
-          case ReturnType.piped:
+          case SearchInfoType.piped:
             final body = response.body;
             if (body.contains('erro')) {
               return left(InvalidCepError());
             }
             return right(ViaCepInfo.fromPiped(body));
-          case ReturnType.querty:
+          case SearchInfoType.querty:
             final body = response.body;
             if (body.contains('erro')) {
               return left(InvalidCepError());
@@ -122,29 +129,24 @@ class ViaCepSearchCep {
   /// caracteres uma exceção será lançada.
   ///
   static Future<Either<SearchCepError, List<ViaCepInfo>>> searchForCeps({
-    String uf,
-    String cidade,
-    String logradouro,
-    ReturnType returnType = ReturnType.json,
+    @required String uf,
+    @required String cidade,
+    @required String logradouro,
+    SearchCepsType returnType = SearchCepsType.json,
   }) async {
     try {
-      final response = await http
-          .get('$BASE_URL/$uf/$cidade/$logradouro/${getType(returnType)}');
+      final type = getTypeSearchCeps(returnType);
+      final response =
+          await http.get('$BASE_URL/$uf/$cidade/$logradouro/$type');
 
       if (response.statusCode == OK) {
         switch (returnType) {
-          case ReturnType.json:
+          case SearchCepsType.json:
             final listInfo = jsonDecode(response.body);
             return right(List.generate(
                 listInfo.length, (int i) => ViaCepInfo.fromJson(listInfo[i])));
-          case ReturnType.xml:
+          case SearchCepsType.xml:
             return right(ViaCepInfo.toListXml(response.body));
-          case ReturnType.piped:
-            return left(SearchCepError(
-                'Opção de retorno não implementada para este método'));
-          case ReturnType.querty:
-            return left(SearchCepError(
-                'Opção de retorno não implementada para este método'));
         }
       }
       return left(InvalidFormatError(
@@ -156,16 +158,10 @@ class ViaCepSearchCep {
 }
 
 /// Precisamos mapear o enum de retorno com a string que a API recebe
-String getType(ReturnType returnType) {
-  switch (returnType) {
-    case ReturnType.json:
-      return 'json';
-    case ReturnType.xml:
-      return 'xml';
-    case ReturnType.piped:
-      return 'piped';
-    case ReturnType.querty:
-      return 'querty';
-  }
-  return 'json';
+String getType(SearchInfoType returnType) {
+  return returnType.toString().split('.').last;
+}
+
+String getTypeSearchCeps(SearchCepsType returnType) {
+  return returnType.toString().split('.').last;
 }
