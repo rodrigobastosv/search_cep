@@ -8,7 +8,7 @@ void main() {
   group('searchInfoByCep', () {
     test('should return ViaCepInfo if CEP exists', () async {
       // arrange
-      final cep = '01001000';
+      const cep = '01001000';
 
       // act
       final cepInfo = await ViaCepSearchCep.searchInfoByCep(cep: cep);
@@ -21,7 +21,7 @@ void main() {
     });
     test('should return InvalidFormatError if CEP has bad format', () async {
       // arrange
-      final cep = '01001000a';
+      const cep = '01001000a';
 
       // act
       final cepInfo = await ViaCepSearchCep.searchInfoByCep(cep: cep);
@@ -34,7 +34,7 @@ void main() {
     });
     test('should return InvalidCepError if CEP doesn\'t exist', () async {
       // arrange
-      final cep = '11111111';
+      const cep = '11111111';
 
       // act
       final cepInfo = await ViaCepSearchCep.searchInfoByCep(cep: cep);
