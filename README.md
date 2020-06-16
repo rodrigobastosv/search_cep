@@ -1,3 +1,6 @@
+[![codecov](https://codecov.io/gh/rodrigobastosv/search_cep/branch/master/graph/badge.svg)](https://codecov.io/gh/rodrigobastosv/search_cep)
+[![Actions Status](https://github.com/rodrigobastosv/search_cep/workflows/build/badge.svg)]
+
 Pacote criado para ser uma abstração e facilitar o uso da API [via_cep][viacep] ou da API [Postmon][postmon].  Ambas APIs fornecem pesquisa de localidade por CEP. Pelos testes que fiz a API do Postmon retorna dados mais atualizados,
 já a API via_cep retorna dados mais completos. O pacote foi criado de maneira que o usuário tem a possibilidade de escolher
 quais das duas opções de API achar melhor.
