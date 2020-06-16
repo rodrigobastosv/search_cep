@@ -25,33 +25,24 @@ class ViaCepInfo {
       this.gia});
 
   ViaCepInfo.fromJson(Map<String, dynamic> json) {
-    cep = json['cep'];
-    logradouro = json['logradouro'];
-    complemento = json['complemento'];
-    bairro = json['bairro'];
-    localidade = json['localidade'];
-    uf = json['uf'];
-    unidade = json['unidade'];
-    ibge = json['ibge'];
-    gia = json['gia'];
+    cep = json['cep'] as String;
+    logradouro = json['logradouro'] as String;
+    complemento = json['complemento'] as String;
+    bairro = json['bairro'] as String;
+    localidade = json['localidade'] as String;
+    uf = json['uf'] as String;
+    unidade = json['unidade'] as String;
+    ibge = json['ibge'] as String;
+    gia = json['gia'] as String;
   }
 
   ViaCepInfo.fromXml(String content) {
-    xml.Xml2Json myTransformer = xml.Xml2Json();
+    final myTransformer = xml.Xml2Json();
     myTransformer.parse(content);
     content = myTransformer.toParker();
 
-    Map<String, dynamic> decodedData = jsonDecode(content)['xmlcep'];
-
-    cep = decodedData['cep'];
-    logradouro = decodedData['logradouro'];
-    complemento = decodedData['complemento'];
-    bairro = decodedData['bairro'];
-    localidade = decodedData['localidade'];
-    uf = decodedData['uf'];
-    unidade = decodedData['unidade'];
-    ibge = decodedData['ibge'];
-    gia = decodedData['gia'];
+    final decodedData = jsonDecode(content)['xmlcep'];
+    ViaCepInfo.fromJson(decodedData as Map<String, dynamic>);
   }
 
   ViaCepInfo.fromPiped(String content) {
@@ -83,21 +74,21 @@ class ViaCepInfo {
   }
 
   static List<ViaCepInfo> toListXml(String content) {
-    xml.Xml2Json myTransformer = xml.Xml2Json();
+    final myTransformer = xml.Xml2Json();
     myTransformer.parse(content);
-    content = myTransformer.toParker();
+    final transformed = myTransformer.toParker();
 
-    Map<String, dynamic> decodedData = jsonDecode(content)['xmlcep'];
+    final decodedData = jsonDecode(transformed)['xmlcep'];
     if (decodedData['enderecos'] == null) {
       return [];
     }
-    final enderecos = decodedData['enderecos']['endereco'];
-    return List.generate(
-        enderecos.length, (i) => ViaCepInfo.fromJson(enderecos[i]));
+    final enderecos = decodedData['enderecos']['endereco'] as List;
+    return List.generate(enderecos.length,
+        (i) => ViaCepInfo.fromJson(enderecos[i] as Map<String, dynamic>));
   }
 
   @override
   String toString() {
-    return 'ViaCepInfo{cep: $cep, logradouro: $logradouro, complemento: $complemento, bairro: $bairro, localidade: $localidade, uf: $uf, unidade: $unidade, ibge: $ibge, gia: $gia}';
+    return '''ViaCepInfo{cep: $cep, logradouro: $logradouro, complemento: $complemento, bairro: $bairro, localidade: $localidade, uf: $uf, unidade: $unidade, ibge: $ibge, gia: $gia}''';
   }
 }
