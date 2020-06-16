@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:meta/meta.dart';
 
 import '../errors/errors.dart';
 import 'via_cep_info.dart';
