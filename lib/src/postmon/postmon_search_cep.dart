@@ -10,9 +10,11 @@ import 'postmon_cep_info.dart';
 enum PostmonReturnType { json, xml }
 
 class PostmonSearchCep {
-  PostmonSearchCep({@required this.client}) : assert(client != null);
+  PostmonSearchCep({http.Client client}) {
+    _client = client ?? http.Client();
+  }
 
-  final http.Client client;
+  http.Client _client;
 
   /// URL base do webservice via_cep
   static const String baseUrl = 'https://api.postmon.com.br/v1/cep';
@@ -54,7 +56,7 @@ class PostmonSearchCep {
       return left(const InvalidFormatError());
     }
     try {
-      final response = await client.get(
+      final response = await _client.get(
           '$baseUrl/$cep${returnType == PostmonReturnType.xml ? '?format=xml' : ''}');
 
       if (response.statusCode == ok) {

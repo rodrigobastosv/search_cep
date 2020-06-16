@@ -20,10 +20,11 @@ enum SearchCepsType {
 }
 
 class ViaCepSearchCep {
-  ViaCepSearchCep({@required this.client})
-      : assert(client != null, 'Um cliente HTTP deve ser fornecido!');
+  ViaCepSearchCep({http.Client client}) {
+    _client = client ?? http.Client();
+  }
 
-  final http.Client client;
+  http.Client _client;
 
   /// URL base do webservice via_cep
   final String baseUrl = 'https://viacep.com.br/ws';
@@ -66,7 +67,8 @@ class ViaCepSearchCep {
       return left(const InvalidFormatError());
     }
     try {
-      final response = await client.get('$baseUrl/$cep/${getType(returnType)}');
+      final response =
+          await _client.get('$baseUrl/$cep/${getType(returnType)}');
       if (response == null) {
         throw Exception();
       }
@@ -156,7 +158,7 @@ class ViaCepSearchCep {
       final type = getTypeSearchCeps(returnType);
 
       final response =
-          await client.get('$baseUrl/$uf/$cidade/$logradouro/$type');
+          await _client.get('$baseUrl/$uf/$cidade/$logradouro/$type');
 
       if (response.statusCode == ok) {
         switch (returnType) {

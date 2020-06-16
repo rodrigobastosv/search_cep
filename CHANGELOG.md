@@ -1,3 +1,7 @@
+## 3.0.0+1
+- Retirando obrigatoriedade de passar um cliente http
+- Adicionando example
+
 ## 3.0.0
 - Refatorando o código para ficar mais testável
 - Adicionando testes unitários

@@ -22,10 +22,6 @@ void main() {
       );
     });
 
-    test('asserts', () {
-      expect(() => PostmonSearchCep(client: null), throwsAssertionError);
-    });
-
     test('PostmonCepInfo toString()', () {
       final instance = PostmonCepInfo(
         cep: '00000000',

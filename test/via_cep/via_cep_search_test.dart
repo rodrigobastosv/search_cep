@@ -22,10 +22,6 @@ void main() {
       );
     });
 
-    test('asserts', () {
-      expect(() => ViaCepSearchCep(client: null), throwsAssertionError);
-    });
-
     test('ViaCepInfo toString()', () {
       final instance = ViaCepInfo(
         cep: '00000000',
