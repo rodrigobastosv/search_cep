@@ -1,9 +1,6 @@
 import 'dart:convert';
 
-import 'package:search_cep/src/via_cep/via_cep_search_cep_error.dart';
 import 'package:xml2json/xml2json.dart' as xml;
-
-import '../../search_cep.dart';
 
 class ViaCepInfo {
   String cep;
@@ -15,8 +12,6 @@ class ViaCepInfo {
   String unidade;
   String ibge;
   String gia;
-  bool hasError;
-  ViaCepSearchCepError searchCepError;
 
   ViaCepInfo(
       {this.cep,
@@ -30,35 +25,24 @@ class ViaCepInfo {
       this.gia});
 
   ViaCepInfo.fromJson(Map<String, dynamic> json) {
-    cep = json['cep'];
-    logradouro = json['logradouro'];
-    complemento = json['complemento'];
-    bairro = json['bairro'];
-    localidade = json['localidade'];
-    uf = json['uf'];
-    unidade = json['unidade'];
-    ibge = json['ibge'];
-    gia = json['gia'];
-    hasError = false;
+    cep = json['cep'] as String;
+    logradouro = json['logradouro'] as String;
+    complemento = json['complemento'] as String;
+    bairro = json['bairro'] as String;
+    localidade = json['localidade'] as String;
+    uf = json['uf'] as String;
+    unidade = json['unidade'] as String;
+    ibge = json['ibge'] as String;
+    gia = json['gia'] as String;
   }
 
   ViaCepInfo.fromXml(String content) {
-    xml.Xml2Json myTransformer = xml.Xml2Json();
+    final myTransformer = xml.Xml2Json();
     myTransformer.parse(content);
     content = myTransformer.toParker();
 
-    Map<String, dynamic> decodedData = jsonDecode(content)['xmlcep'];
-
-    cep = decodedData['cep'];
-    logradouro = decodedData['logradouro'];
-    complemento = decodedData['complemento'];
-    bairro = decodedData['bairro'];
-    localidade = decodedData['localidade'];
-    uf = decodedData['uf'];
-    unidade = decodedData['unidade'];
-    ibge = decodedData['ibge'];
-    gia = decodedData['gia'];
-    hasError = false;
+    final decodedData = jsonDecode(content)['xmlcep'];
+    ViaCepInfo.fromJson(decodedData as Map<String, dynamic>);
   }
 
   ViaCepInfo.fromPiped(String content) {
@@ -73,7 +57,6 @@ class ViaCepInfo {
     unidade = splited[6].split(':')[1];
     ibge = splited[7].split(':')[1];
     gia = splited[8].split(':')[1];
-    hasError = false;
   }
 
   ViaCepInfo.fromQuerty(String content) {
@@ -88,33 +71,24 @@ class ViaCepInfo {
     unidade = querted[6].split('=')[1];
     ibge = querted[7].split('=')[1];
     gia = querted[8].split('=')[1];
-    hasError = false;
-  }
-
-  ViaCepInfo.fromError(ErrorType errorType) {
-    final errorMessage = errorType == ErrorType.invalidCepFormat
-        ? 'CEP com formato inválido'
-        : 'CEP com formato válido, porém inexistente na base de dados';
-    searchCepError = ViaCepSearchCepError(errorType, errorMessage);
-    hasError = true;
   }
 
   static List<ViaCepInfo> toListXml(String content) {
-    xml.Xml2Json myTransformer = xml.Xml2Json();
+    final myTransformer = xml.Xml2Json();
     myTransformer.parse(content);
-    content = myTransformer.toParker();
+    final transformed = myTransformer.toParker();
 
-    Map<String, dynamic> decodedData = jsonDecode(content)['xmlcep'];
+    final decodedData = jsonDecode(transformed)['xmlcep'];
     if (decodedData['enderecos'] == null) {
       return [];
     }
-    final enderecos = decodedData['enderecos']['endereco'];
-    return List.generate(
-        enderecos.length, (i) => ViaCepInfo.fromJson(enderecos[i]));
+    final enderecos = decodedData['enderecos']['endereco'] as List;
+    return List.generate(enderecos.length,
+        (i) => ViaCepInfo.fromJson(enderecos[i] as Map<String, dynamic>));
   }
 
   @override
   String toString() {
-    return 'ViaCepInfo{cep: $cep, logradouro: $logradouro, complemento: $complemento, bairro: $bairro, localidade: $localidade, uf: $uf, unidade: $unidade, ibge: $ibge, gia: $gia, searchCepError: $searchCepError}';
+    return '''ViaCepInfo{cep: $cep, logradouro: $logradouro, complemento: $complemento, bairro: $bairro, localidade: $localidade, uf: $uf, unidade: $unidade, ibge: $ibge, gia: $gia}''';
   }
 }
