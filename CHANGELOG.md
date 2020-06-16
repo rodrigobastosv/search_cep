@@ -1,3 +1,8 @@
+## 3.0.0
+- Refatorando o código para ficar mais testável
+- Adicionando testes unitários
+- Adicionando uma abordagem mais funcional com o uso do dartz
+
 ## 2.0.1+1
 - Atualizando dependências
 - Melhorando a documentação
