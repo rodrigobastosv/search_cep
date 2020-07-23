@@ -1,3 +1,6 @@
+## 3.0.0+2
+- Adicionando mais comentários 
+
 ## 3.0.0+1
 - Retirando obrigatoriedade de passar um cliente http
 - Adicionando example

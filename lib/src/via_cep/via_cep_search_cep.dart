@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import '../errors/errors.dart';
 import 'via_cep_info.dart';
 
+/// Enum que guarda o tipo de busca que será feito
 enum SearchInfoType {
   json,
   xml,
@@ -14,6 +15,7 @@ enum SearchInfoType {
   querty,
 }
 
+/// Enum que guarda o tipo de busca que será feito em caso de busca por CEP
 enum SearchCepsType {
   json,
   xml,

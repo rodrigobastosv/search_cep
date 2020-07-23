@@ -24,6 +24,7 @@ class ViaCepInfo {
       this.ibge,
       this.gia});
 
+  /// Desserializa de json
   ViaCepInfo.fromJson(Map<String, dynamic> json) {
     cep = json['cep'] as String;
     logradouro = json['logradouro'] as String;
@@ -36,6 +37,7 @@ class ViaCepInfo {
     gia = json['gia'] as String;
   }
 
+  /// Desserializa de xml
   ViaCepInfo.fromXml(String content) {
     final myTransformer = xml.Xml2Json();
     myTransformer.parse(content);
@@ -45,6 +47,7 @@ class ViaCepInfo {
     ViaCepInfo.fromJson(decodedData as Map<String, dynamic>);
   }
 
+  /// Desserializa de piped
   ViaCepInfo.fromPiped(String content) {
     final splited = content.split('|');
 
@@ -59,6 +62,7 @@ class ViaCepInfo {
     gia = splited[8].split(':')[1];
   }
 
+  /// Desserializa de qwerty
   ViaCepInfo.fromQuerty(String content) {
     final querted = content.replaceAll('+', ' ').split('&');
 

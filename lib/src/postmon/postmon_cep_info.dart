@@ -24,6 +24,7 @@ class PostmonCepInfo {
     this.cidadeInfo,
   });
 
+  /// Desserializa de json
   PostmonCepInfo.fromJson(Map<String, dynamic> json) {
     bairro = json['bairro'] as String;
     cidade = json['cidade'] as String;
@@ -38,6 +39,7 @@ class PostmonCepInfo {
         : null;
   }
 
+  /// Desserializa de xml
   PostmonCepInfo.fromXml(String content) {
     final myTransformer = xml.Xml2Json();
     myTransformer.parse(content);
