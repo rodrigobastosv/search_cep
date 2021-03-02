@@ -6,13 +6,13 @@ import 'cidade_info.dart';
 import 'estado_info.dart';
 
 class PostmonCepInfo {
-  String bairro;
-  String cidade;
-  String logradouro;
-  String cep;
-  String estado;
-  CidadeInfo cidadeInfo;
-  EstadoInfo estadoInfo;
+  String? bairro;
+  String? cidade;
+  String? logradouro;
+  String? cep;
+  String? estado;
+  CidadeInfo? cidadeInfo;
+  EstadoInfo? estadoInfo;
 
   PostmonCepInfo({
     this.bairro,

@@ -3,26 +3,27 @@ import 'dart:convert';
 import 'package:xml2json/xml2json.dart' as xml;
 
 class ViaCepInfo {
-  String cep;
-  String logradouro;
-  String complemento;
-  String bairro;
-  String localidade;
-  String uf;
-  String unidade;
-  String ibge;
-  String gia;
+  String? cep;
+  String? logradouro;
+  String? complemento;
+  String? bairro;
+  String? localidade;
+  String? uf;
+  String? unidade;
+  String? ibge;
+  String? gia;
 
-  ViaCepInfo(
-      {this.cep,
-      this.logradouro,
-      this.complemento,
-      this.bairro,
-      this.localidade,
-      this.uf,
-      this.unidade,
-      this.ibge,
-      this.gia});
+  ViaCepInfo({
+    this.cep,
+    this.logradouro,
+    this.complemento,
+    this.bairro,
+    this.localidade,
+    this.uf,
+    this.unidade,
+    this.ibge,
+    this.gia,
+  });
 
   /// Desserializa de json
   ViaCepInfo.fromJson(Map<String, dynamic> json) {
