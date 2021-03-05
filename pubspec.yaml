@@ -9,8 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http: ^0.13.0-nullsafety.0
-  xml2json: ^5.0.0-nullsafety.0
+  http: ^0.13.0
+  xml2json: ^5.0.0
   dartz: ^0.10.0-nullsafety.1
 
 dev_dependencies:
