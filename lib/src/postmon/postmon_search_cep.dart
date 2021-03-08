@@ -15,6 +15,8 @@ class PostmonSearchCep {
 
   late final http.Client _client;
 
+  http.Client get client => _client;
+
   /// URL base do webservice via_cep
   static const String baseUrl = 'https://api.postmon.com.br/v1/cep';
 

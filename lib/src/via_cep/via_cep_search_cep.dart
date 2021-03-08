@@ -27,6 +27,8 @@ class ViaCepSearchCep {
 
   late final http.Client _client;
 
+  http.Client get client => _client;
+
   /// URL base do webservice via_cep
   final String baseUrl = 'https://viacep.com.br/ws';
 

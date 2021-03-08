@@ -23,6 +23,11 @@ void main() {
       );
     });
 
+    test('Should create a client when none is passed', () {
+      final viaCepSearch = ViaCepSearchCep();
+      expect(viaCepSearch.client, isNotNull);
+    });
+
     test('ViaCepInfo toString()', () {
       final instance = ViaCepInfo(
         cep: '00000000',
@@ -59,7 +64,6 @@ void main() {
         // act
         final cepInfo = await viaCepSearchCep.searchInfoByCep(cep: cep);
         final data = cepInfo.fold((_) => null, (data) => data);
-        print(data);
         // assert
         expect(cepInfo.isRight(), true);
         expect(data, isNotNull);
@@ -160,6 +164,27 @@ void main() {
         expect(cepInfo.isLeft(), true);
         expect(error, isNotNull);
         expect(error, isInstanceOf<InvalidFormatError>());
+      });
+
+      test('should throw NetworkError when theres an exception', () async {
+        // arrange
+        final mockResponse = MockResponse();
+        const cep = '01001000';
+        final uri = Uri.parse('https://viacep.com.br/ws/$cep/json');
+        when(() => mockResponse.statusCode).thenReturn(500);
+        when(() => mockHttp.get(uri)).thenAnswer(
+          (_) async => mockResponse,
+        );
+
+        final cepInfo = await viaCepSearchCep.searchInfoByCep(cep: cep);
+        final error = cepInfo.fold<SearchCepError>(
+          (error) => error,
+          (_) => SearchCepError('error'),
+        );
+
+        expect(cepInfo.isLeft(), true);
+        expect(error, isNotNull);
+        expect(error, isInstanceOf<NetworkError>());
       });
 
       test('should return InvalidFormatError when api returns 400', () async {

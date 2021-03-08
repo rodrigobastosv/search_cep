@@ -23,6 +23,11 @@ void main() {
       );
     });
 
+    test('Should create a client when none is passed', () {
+      final postmonSearchCep = PostmonSearchCep();
+      expect(postmonSearchCep.client, isNotNull);
+    });
+
     test('PostmonCepInfo toString()', () {
       final instance = PostmonCepInfo(
         cep: '00000000',
