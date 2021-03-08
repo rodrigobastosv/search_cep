@@ -27,15 +27,15 @@ class ViaCepInfo {
 
   /// Desserializa de json
   ViaCepInfo.fromJson(Map<String, dynamic> json) {
-    cep = json['cep'] as String;
-    logradouro = json['logradouro'] as String;
-    complemento = json['complemento'] as String;
-    bairro = json['bairro'] as String;
-    localidade = json['localidade'] as String;
-    uf = json['uf'] as String;
-    unidade = json['unidade'] as String;
-    ibge = json['ibge'] as String;
-    gia = json['gia'] as String;
+    cep = json['cep'] as String?;
+    logradouro = json['logradouro'] as String?;
+    complemento = json['complemento'] as String?;
+    bairro = json['bairro'] as String?;
+    localidade = json['localidade'] as String?;
+    uf = json['uf'] as String?;
+    unidade = json['unidade'] as String?;
+    ibge = json['ibge'] as String?;
+    gia = json['gia'] as String?;
   }
 
   /// Desserializa de xml

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
-import 'package:http/http.dart' as http ;
+import 'package:http/http.dart' as http;
 
 import '../errors/errors.dart';
 import 'via_cep_info.dart';

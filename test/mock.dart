@@ -1,4 +1,6 @@
 import 'package:http/http.dart' as http;
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 
 class MockHttp extends Mock implements http.Client {}
+
+class UriFake extends Fake implements Uri {}
