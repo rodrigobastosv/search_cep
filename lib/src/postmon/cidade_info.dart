@@ -1,6 +1,6 @@
 class CidadeInfo {
-  String areaKm2;
-  String codigoIbge;
+  String? areaKm2;
+  String? codigoIbge;
 
   CidadeInfo({this.areaKm2, this.codigoIbge});
 

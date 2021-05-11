@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:search_cep/src/errors/errors.dart';
 import 'package:search_cep/src/postmon/cidade_info.dart';
 import 'package:search_cep/src/postmon/estado_info.dart';
@@ -12,14 +12,15 @@ import 'mock_postmon_responses.dart';
 
 void main() {
   group('PostmonSearchCep tests', () {
-    PostmonSearchCep postmonSearchCep;
-    MockHttp mockHttp;
+    late PostmonSearchCep postmonSearchCep;
+    late MockHttp mockHttp;
 
     setUpAll(() {
       mockHttp = MockHttp();
       postmonSearchCep = PostmonSearchCep(
         client: mockHttp,
       );
+      registerFallbackValue<Uri>(Uri());
     });
 
     test('PostmonCepInfo toString()', () {
@@ -51,7 +52,7 @@ void main() {
           // arrange
           const cep = '01001000';
           when(
-            mockHttp.get(any),
+            () => mockHttp.get(any()),
           ).thenAnswer(
             (_) => Future.value(
               http.Response(
@@ -75,7 +76,7 @@ void main() {
           // arrange
           const cep = '01001000';
           when(
-            mockHttp.get(any),
+            () => mockHttp.get(any()),
           ).thenAnswer(
             (_) => Future.value(
               http.Response(
@@ -106,7 +107,7 @@ void main() {
         // act
         final cepInfo = await postmonSearchCep.searchInfoByCep(cep: cep);
         final error =
-            cepInfo.fold<SearchCepError>((error) => error, (_) => null);
+            cepInfo.fold<SearchCepError?>((error) => error, (_) => null);
 
         // assert
         expect(cepInfo.isLeft(), true);
@@ -118,7 +119,7 @@ void main() {
         // arrange
         const cep = '11111111';
         when(
-          mockHttp.get(any),
+          () => mockHttp.get(any()),
         ).thenAnswer(
           (_) => Future.value(
             http.Response(
@@ -131,7 +132,7 @@ void main() {
         // act
         final cepInfo = await postmonSearchCep.searchInfoByCep(cep: cep);
         final error =
-            cepInfo.fold<SearchCepError>((error) => error, (_) => null);
+            cepInfo.fold<SearchCepError?>((error) => error, (_) => null);
 
         // assert
         expect(cepInfo.isLeft(), true);
@@ -143,7 +144,7 @@ void main() {
         // arrange
         const cep = '11111111';
         when(
-          mockHttp.get(any),
+          () => mockHttp.get(any()),
         ).thenThrow(
           Exception(),
         );
@@ -151,7 +152,7 @@ void main() {
         // act
         final cepInfo = await postmonSearchCep.searchInfoByCep(cep: cep);
         final error =
-            cepInfo.fold<SearchCepError>((error) => error, (_) => null);
+            cepInfo.fold<SearchCepError?>((error) => error, (_) => null);
 
         // assert
         expect(cepInfo.isLeft(), true);

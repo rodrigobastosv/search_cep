@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../errors/errors.dart';
@@ -22,11 +21,11 @@ enum SearchCepsType {
 }
 
 class ViaCepSearchCep {
-  ViaCepSearchCep({http.Client client}) {
+  ViaCepSearchCep({http.Client? client}) {
     _client = client ?? http.Client();
   }
 
-  http.Client _client;
+  late http.Client _client;
 
   /// URL base do webservice via_cep
   final String baseUrl = 'https://viacep.com.br/ws';
@@ -62,18 +61,15 @@ class ViaCepSearchCep {
   /// propriedade [ViaCepCepInfo.errorMessage].
   ///
   Future<Either<SearchCepError, ViaCepInfo>> searchInfoByCep({
-    String cep,
+    required String cep,
     SearchInfoType returnType = SearchInfoType.json,
   }) async {
-    if (cep == null || cep.isEmpty || cep.length != 8) {
+    if (cep.isEmpty || cep.length != 8) {
       return left(const InvalidFormatError());
     }
     try {
-      final response =
-          await _client.get('$baseUrl/$cep/${getType(returnType)}');
-      if (response == null) {
-        throw Exception();
-      }
+      final uri = Uri.parse('$baseUrl/$cep/${getType(returnType)}');
+      final response = await _client.get(uri);
       if (response.statusCode == ok) {
         switch (returnType) {
           case SearchInfoType.json:
@@ -105,7 +101,7 @@ class ViaCepSearchCep {
       } else if (response.statusCode == badRequest) {
         return left(const InvalidFormatError());
       }
-      return null;
+      return left(const NetworkError());
     } on Exception {
       return left(const NetworkError());
     }
@@ -151,16 +147,16 @@ class ViaCepSearchCep {
   /// caracteres uma exceção será lançada.
   ///
   Future<Either<SearchCepError, List<ViaCepInfo>>> searchForCeps({
-    @required String uf,
-    @required String cidade,
-    @required String logradouro,
+    required String uf,
+    required String cidade,
+    required String logradouro,
     SearchCepsType returnType = SearchCepsType.json,
   }) async {
     try {
       final type = getTypeSearchCeps(returnType);
 
-      final response =
-          await _client.get('$baseUrl/$uf/$cidade/$logradouro/$type');
+      final uri = Uri.parse('$baseUrl/$uf/$cidade/$logradouro/$type');
+      final response = await _client.get(uri);
 
       if (response.statusCode == ok) {
         switch (returnType) {

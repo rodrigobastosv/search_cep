@@ -1,23 +1,23 @@
 name: search_cep
 description: Pacote para facilitar e agilizar a comunicação com a API via_cep e obter informações sobre CEPs e localidades de todo o Brasil
-version: 3.0.0+2
+version: 4.0.0-nullsafety.0
 homepage: https://github.com/rodrigobastosv/search_cep
 
 environment:
-  sdk: '>=2.1.0 <3.0.0'
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  http: ^0.12.1
-  xml2json: ^4.2.0
-  dartz: ^0.9.1
+  http: ^0.13.3
+  xml2json: ^5.1.0
+  dartz: ^0.10.0-nullsafety.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   effective_dart: ^1.2.2
-  mockito: ^4.1.1
+  mocktail: ^0.1.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

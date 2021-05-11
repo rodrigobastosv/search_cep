@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../errors/errors.dart';
@@ -10,11 +9,11 @@ import 'postmon_cep_info.dart';
 enum PostmonReturnType { json, xml }
 
 class PostmonSearchCep {
-  PostmonSearchCep({http.Client client}) {
+  PostmonSearchCep({http.Client? client}) {
     _client = client ?? http.Client();
   }
 
-  http.Client _client;
+  late http.Client _client;
 
   /// URL base do webservice via_cep
   static const String baseUrl = 'https://api.postmon.com.br/v1/cep';
@@ -49,15 +48,16 @@ class PostmonSearchCep {
   /// propriedade [PostmonCepInfo.error] setata com true  e um campo com a
   /// mensagem descrevendo o erro na propriedade [PostmonCepInfo.errorMessage].
   Future<Either<SearchCepError, PostmonCepInfo>> searchInfoByCep({
-    @required String cep,
+    required String cep,
     PostmonReturnType returnType = PostmonReturnType.json,
   }) async {
-    if (cep == null || cep.isEmpty || cep.length != 8) {
+    if (cep.isEmpty || cep.length != 8) {
       return left(const InvalidFormatError());
     }
     try {
-      final response = await _client.get(
+      final uri = Uri.parse(
           '$baseUrl/$cep${returnType == PostmonReturnType.xml ? '?format=xml' : ''}');
+      final response = await _client.get(uri);
 
       if (response.statusCode == ok) {
         switch (returnType) {

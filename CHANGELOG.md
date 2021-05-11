@@ -1,3 +1,6 @@
+## 4.0.0-nullsafety.0
+- Migrando pacote para null safe!
+
 ## 3.0.0+2
 - Adicionando mais comentários 
 

@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:search_cep/src/errors/errors.dart';
 import 'package:search_cep/src/via_cep/via_cep_info.dart';
 import 'package:search_cep/src/via_cep/via_cep_search_cep.dart';
@@ -12,14 +12,15 @@ import 'mock_via_cep_responses.dart';
 
 void main() {
   group('ViaCepSearchCep tests', () {
-    ViaCepSearchCep viaCepSearchCep;
-    MockHttp mockHttp;
+    late ViaCepSearchCep viaCepSearchCep;
+    late MockHttp mockHttp;
 
     setUpAll(() {
       mockHttp = MockHttp();
       viaCepSearchCep = ViaCepSearchCep(
         client: mockHttp,
       );
+      registerFallbackValue<Uri>(Uri());
     });
 
     test('ViaCepInfo toString()', () {
@@ -45,7 +46,10 @@ void main() {
         // arrange
         const cep = '01001000';
         final body = {'body': 'info'};
-        when(mockHttp.get('https://viacep.com.br/ws/$cep/json')).thenAnswer(
+        when(() {
+          final uri = Uri.parse('https://viacep.com.br/ws/$cep/json');
+          return mockHttp.get(uri);
+        }).thenAnswer(
           (_) => Future.value(
             http.Response(
               jsonEncode(body),
@@ -68,7 +72,10 @@ void main() {
         // arrange
         // arrange
         const cep = '01001000';
-        when(mockHttp.get('https://viacep.com.br/ws/$cep/xml')).thenAnswer(
+        when(() {
+          final uri = Uri.parse('https://viacep.com.br/ws/$cep/xml');
+          return mockHttp.get(uri);
+        }).thenAnswer(
           (_) => Future.value(
             http.Response(
               xmlResponse,
@@ -93,7 +100,10 @@ void main() {
       test('should return ViaCepInfo piped if CEP exists', () async {
         // arrange
         const cep = '01001000';
-        when(mockHttp.get('https://viacep.com.br/ws/$cep/piped')).thenAnswer(
+        when(() {
+          final uri = Uri.parse('https://viacep.com.br/ws/$cep/piped');
+          return mockHttp.get(uri);
+        }).thenAnswer(
           (_) => Future.value(
             http.Response(
               pipedResponse,
@@ -118,7 +128,10 @@ void main() {
       test('should return ViaCepInfo from querty if CEP exists', () async {
         // arrange
         const cep = '01001000';
-        when(mockHttp.get('https://viacep.com.br/ws/$cep/querty')).thenAnswer(
+        when(() {
+          final uri = Uri.parse('https://viacep.com.br/ws/$cep/querty');
+          return mockHttp.get(uri);
+        }).thenAnswer(
           (_) => Future.value(
             http.Response(
               qwertyResponse,
@@ -147,7 +160,7 @@ void main() {
         // act
         final cepInfo = await viaCepSearchCep.searchInfoByCep(cep: cep);
         final error =
-            cepInfo.fold<SearchCepError>((error) => error, (_) => null);
+            cepInfo.fold<SearchCepError?>((error) => error, (_) => null);
 
         // assert
         expect(cepInfo.isLeft(), true);
@@ -158,7 +171,10 @@ void main() {
       test('should return InvalidFormatError when api returns 400', () async {
         // arrange
         const cep = '00000000';
-        when(mockHttp.get('https://viacep.com.br/ws/$cep/json')).thenAnswer(
+        when(() {
+          final uri = Uri.parse('https://viacep.com.br/ws/$cep/json');
+          return mockHttp.get(uri);
+        }).thenAnswer(
           (_) => Future.value(
             http.Response(
               qwertyResponse,
@@ -170,7 +186,7 @@ void main() {
         // act
         final cepInfo = await viaCepSearchCep.searchInfoByCep(cep: cep);
         final error =
-            cepInfo.fold<SearchCepError>((error) => error, (_) => null);
+            cepInfo.fold<SearchCepError?>((error) => error, (_) => null);
 
         // assert
         expect(cepInfo.isLeft(), true);
@@ -180,15 +196,14 @@ void main() {
 
       test('should return NetworkError when exception occurs', () async {
         // arrange
-        const cep = '60175020';
-        when(mockHttp.get('https://viacep.com.br/ws/$cep/querty')).thenThrow(
+        when(() => mockHttp.get(any())).thenThrow(
           Exception(),
         );
 
         // act
-        final cepInfo = await viaCepSearchCep.searchInfoByCep(cep: cep);
+        final cepInfo = await viaCepSearchCep.searchInfoByCep(cep: '60175021');
         final error =
-            cepInfo.fold<SearchCepError>((error) => error, (_) => null);
+            cepInfo.fold<SearchCepError?>((error) => error, (_) => null);
 
         // assert
         expect(cepInfo.isLeft(), true);
@@ -199,8 +214,10 @@ void main() {
       group('InvalidCepError tests', () {
         test('with json', () async {
           final body = {'erro': true};
-          when(mockHttp.get('https://viacep.com.br/ws/00000000/json'))
-              .thenAnswer(
+          when(() {
+            final uri = Uri.parse('https://viacep.com.br/ws/00000000/json');
+            return mockHttp.get(uri);
+          }).thenAnswer(
             (_) => Future.value(
               http.Response(
                 jsonEncode(body),
@@ -213,7 +230,7 @@ void main() {
             returnType: SearchInfoType.json,
           );
           final error =
-              cepInfo.fold<SearchCepError>((error) => error, (_) => null);
+              cepInfo.fold<SearchCepError?>((error) => error, (_) => null);
           expect(cepInfo.isLeft(), true);
           expect(error, isNotNull);
           expect(error, isInstanceOf<InvalidCepError>());
@@ -221,8 +238,10 @@ void main() {
 
         test('with xml', () async {
           final body = {'erro': 'Deu erro'};
-          when(mockHttp.get('https://viacep.com.br/ws/00000000/xml'))
-              .thenAnswer(
+          when(() {
+            final uri = Uri.parse('https://viacep.com.br/ws/00000000/xml');
+            return mockHttp.get(uri);
+          }).thenAnswer(
             (_) => Future.value(
               http.Response(
                 jsonEncode(body),
@@ -235,7 +254,7 @@ void main() {
             returnType: SearchInfoType.xml,
           );
           final error =
-              cepInfo.fold<SearchCepError>((error) => error, (_) => null);
+              cepInfo.fold<SearchCepError?>((error) => error, (_) => null);
           expect(cepInfo.isLeft(), true);
           expect(error, isNotNull);
           expect(error, isInstanceOf<InvalidCepError>());
@@ -243,8 +262,10 @@ void main() {
 
         test('with querty', () async {
           final body = {'erro': 'Deu erro'};
-          when(mockHttp.get('https://viacep.com.br/ws/00000000/querty'))
-              .thenAnswer(
+          when(() {
+            final uri = Uri.parse('https://viacep.com.br/ws/00000000/querty');
+            return mockHttp.get(uri);
+          }).thenAnswer(
             (_) => Future.value(
               http.Response(
                 jsonEncode(body),
@@ -257,7 +278,7 @@ void main() {
             returnType: SearchInfoType.querty,
           );
           final error =
-              cepInfo.fold<SearchCepError>((error) => error, (_) => null);
+              cepInfo.fold<SearchCepError?>((error) => error, (_) => null);
           expect(cepInfo.isLeft(), true);
           expect(error, isNotNull);
           expect(error, isInstanceOf<InvalidCepError>());
@@ -265,8 +286,10 @@ void main() {
 
         test('with piped', () async {
           final body = {'erro': 'Deu erro'};
-          when(mockHttp.get('https://viacep.com.br/ws/00000000/piped'))
-              .thenAnswer(
+          when(() {
+            final uri = Uri.parse('https://viacep.com.br/ws/00000000/piped');
+            return mockHttp.get(uri);
+          }).thenAnswer(
             (_) => Future.value(
               http.Response(
                 jsonEncode(body),
@@ -279,7 +302,7 @@ void main() {
             returnType: SearchInfoType.piped,
           );
           final error =
-              cepInfo.fold<SearchCepError>((error) => error, (_) => null);
+              cepInfo.fold<SearchCepError?>((error) => error, (_) => null);
           expect(cepInfo.isLeft(), true);
           expect(error, isNotNull);
           expect(error, isInstanceOf<InvalidCepError>());
@@ -290,9 +313,11 @@ void main() {
     group('searchForCeps', () {
       test('should return a list of CEPs in json', () async {
         // act
-        when(mockHttp
-                .get('https://viacep.com.br/ws/RS/Porto Alegre/Domingos/json'))
-            .thenAnswer(
+        when(() {
+          final uri = Uri.parse(
+              'https://viacep.com.br/ws/RS/Porto Alegre/Domingos/json');
+          return mockHttp.get(uri);
+        }).thenAnswer(
           (_) => Future.value(http.Response(
             listCepsJsonResponse,
             200,
@@ -305,7 +330,7 @@ void main() {
           returnType: SearchCepsType.json,
         );
         final data =
-            cepInfo.fold<List<ViaCepInfo>>((_) => null, (data) => data);
+            cepInfo.fold<List<ViaCepInfo>?>((_) => null, (data) => data);
 
         // assert
         expect(cepInfo.isRight(), true);
@@ -315,9 +340,11 @@ void main() {
 
       test('should return a list of CEPs in xml', () async {
         // act
-        when(mockHttp
-                .get('https://viacep.com.br/ws/RS/Porto Alegre/Domingos/xml'))
-            .thenAnswer(
+        when(() {
+          final uri = Uri.parse(
+              'https://viacep.com.br/ws/RS/Porto Alegre/Domingos/xml');
+          return mockHttp.get(uri);
+        }).thenAnswer(
           (_) => Future.value(
             http.Response(
               listCepsXmlResponse,
@@ -332,7 +359,7 @@ void main() {
           returnType: SearchCepsType.xml,
         );
         final data =
-            cepInfo.fold<List<ViaCepInfo>>((_) => null, (data) => data);
+            cepInfo.fold<List<ViaCepInfo>?>((_) => null, (data) => data);
 
         // assert
         expect(cepInfo.isRight(), true);
@@ -343,7 +370,7 @@ void main() {
       test('should return InvalidFormatError when api sends 404', () async {
         // act
         when(
-          mockHttp.get(any),
+          () => mockHttp.get(any()),
         ).thenAnswer(
           (_) => Future.value(
             http.Response(
@@ -360,7 +387,7 @@ void main() {
         );
 
         final error =
-            cepInfo.fold<SearchCepError>((error) => error, (_) => null);
+            cepInfo.fold<SearchCepError?>((error) => error, (_) => null);
         expect(cepInfo.isLeft(), true);
         expect(error, isNotNull);
         expect(error, isInstanceOf<InvalidFormatError>());
@@ -370,7 +397,7 @@ void main() {
           () async {
         // act
         when(
-          mockHttp.get(any),
+          () => mockHttp.get(any()),
         ).thenAnswer(
           (_) => Future.value(
             http.Response(
@@ -387,7 +414,7 @@ void main() {
         );
 
         final data =
-            cepInfo.fold<List<ViaCepInfo>>((_) => null, (data) => data);
+            cepInfo.fold<List<ViaCepInfo>?>((_) => null, (data) => data);
 
         // assert
         expect(cepInfo.isRight(), true);
@@ -399,7 +426,7 @@ void main() {
       test('should return NetworkError when exception occurs', () async {
         // act
         when(
-          mockHttp.get(any),
+          () => mockHttp.get(any()),
         ).thenThrow(
           Exception(),
         );
@@ -411,7 +438,7 @@ void main() {
         );
 
         final error =
-            cepInfo.fold<SearchCepError>((error) => error, (_) => null);
+            cepInfo.fold<SearchCepError?>((error) => error, (_) => null);
         expect(cepInfo.isLeft(), true);
         expect(error, isNotNull);
         expect(error, isInstanceOf<NetworkError>());

@@ -1,7 +1,7 @@
 class EstadoInfo {
-  String areaKm2;
-  String codigoIbge;
-  String nome;
+  String? areaKm2;
+  String? codigoIbge;
+  String? nome;
 
   EstadoInfo({this.areaKm2, this.codigoIbge, this.nome});
 
