@@ -1,3 +1,6 @@
+## 4.0.0-nullsafety.1
+- Updating dependencies
+
 ## 4.0.0-nullsafety.0
 - Migrando pra null safety
 

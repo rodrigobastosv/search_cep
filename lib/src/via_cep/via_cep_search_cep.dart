@@ -66,10 +66,10 @@ class ViaCepSearchCep {
     required String cep,
     SearchInfoType returnType = SearchInfoType.json,
   }) async {
-    if (cep.isEmpty || cep.length != 8) {
-      return left(const InvalidFormatError());
-    }
     try {
+      if (cep.isEmpty || cep.length != 8) {
+        return left(const InvalidFormatError());
+      }
       final uri = Uri.parse('$baseUrl/$cep/${getType(returnType)}');
       final response = await _client.get(uri);
       if (response.statusCode == ok) {
@@ -102,9 +102,8 @@ class ViaCepSearchCep {
         }
       } else if (response.statusCode == badRequest) {
         return left(const InvalidFormatError());
-      } else {
-        throw Exception();
       }
+      return left(const NetworkError());
     } on Exception {
       return left(const NetworkError());
     }

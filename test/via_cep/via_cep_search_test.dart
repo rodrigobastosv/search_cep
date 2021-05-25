@@ -21,6 +21,7 @@ void main() {
       viaCepSearchCep = ViaCepSearchCep(
         client: mockHttp,
       );
+      registerFallbackValue<Uri>(Uri());
     });
 
     test('Should create a client when none is passed', () {
