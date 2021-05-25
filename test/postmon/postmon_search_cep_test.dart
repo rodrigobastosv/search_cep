@@ -16,11 +16,17 @@ void main() {
     late MockHttp mockHttp;
 
     setUpAll(() {
+      registerFallbackValue<Uri>(UriFake());
       mockHttp = MockHttp();
       postmonSearchCep = PostmonSearchCep(
         client: mockHttp,
       );
       registerFallbackValue<Uri>(Uri());
+    });
+
+    test('Should create a client when none is passed', () {
+      final postmonSearchCep = PostmonSearchCep();
+      expect(postmonSearchCep.client, isNotNull);
     });
 
     test('PostmonCepInfo toString()', () {
@@ -106,8 +112,10 @@ void main() {
 
         // act
         final cepInfo = await postmonSearchCep.searchInfoByCep(cep: cep);
-        final error =
-            cepInfo.fold<SearchCepError?>((error) => error, (_) => null);
+        final error = cepInfo.fold<SearchCepError>(
+          (error) => error,
+          (_) => SearchCepError('error'),
+        );
 
         // assert
         expect(cepInfo.isLeft(), true);
@@ -131,8 +139,10 @@ void main() {
 
         // act
         final cepInfo = await postmonSearchCep.searchInfoByCep(cep: cep);
-        final error =
-            cepInfo.fold<SearchCepError?>((error) => error, (_) => null);
+        final error = cepInfo.fold<SearchCepError>(
+          (error) => error,
+          (_) => SearchCepError('error'),
+        );
 
         // assert
         expect(cepInfo.isLeft(), true);
@@ -151,8 +161,10 @@ void main() {
 
         // act
         final cepInfo = await postmonSearchCep.searchInfoByCep(cep: cep);
-        final error =
-            cepInfo.fold<SearchCepError?>((error) => error, (_) => null);
+        final error = cepInfo.fold<SearchCepError>(
+          (error) => error,
+          (_) => SearchCepError('error'),
+        );
 
         // assert
         expect(cepInfo.isLeft(), true);

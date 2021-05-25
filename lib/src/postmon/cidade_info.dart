@@ -2,7 +2,10 @@ class CidadeInfo {
   String? areaKm2;
   String? codigoIbge;
 
-  CidadeInfo({this.areaKm2, this.codigoIbge});
+  CidadeInfo({
+    this.areaKm2,
+    this.codigoIbge,
+  });
 
   CidadeInfo.fromJson(Map<String, dynamic> json) {
     areaKm2 = json['area_km2'] as String;

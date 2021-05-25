@@ -13,28 +13,29 @@ class ViaCepInfo {
   String? ibge;
   String? gia;
 
-  ViaCepInfo(
-      {this.cep,
-      this.logradouro,
-      this.complemento,
-      this.bairro,
-      this.localidade,
-      this.uf,
-      this.unidade,
-      this.ibge,
-      this.gia});
+  ViaCepInfo({
+    this.cep,
+    this.logradouro,
+    this.complemento,
+    this.bairro,
+    this.localidade,
+    this.uf,
+    this.unidade,
+    this.ibge,
+    this.gia,
+  });
 
   /// Desserializa de json
   ViaCepInfo.fromJson(Map<String, dynamic> json) {
-    cep = json['cep'];
-    logradouro = json['logradouro'];
-    complemento = json['complemento'];
-    bairro = json['bairro'];
-    localidade = json['localidade'];
-    uf = json['uf'];
-    unidade = json['unidade'];
-    ibge = json['ibge'];
-    gia = json['gia'];
+    cep = json['cep'] as String?;
+    logradouro = json['logradouro'] as String?;
+    complemento = json['complemento'] as String?;
+    bairro = json['bairro'] as String?;
+    localidade = json['localidade'] as String?;
+    uf = json['uf'] as String?;
+    unidade = json['unidade'] as String?;
+    ibge = json['ibge'] as String?;
+    gia = json['gia'] as String?;
   }
 
   /// Desserializa de xml

@@ -21,11 +21,13 @@ enum SearchCepsType {
 }
 
 class ViaCepSearchCep {
-  ViaCepSearchCep({http.Client? client}) {
-    _client = client ?? http.Client();
-  }
+  ViaCepSearchCep({
+    http.Client? client,
+  }) : _client = client ?? http.Client();
 
-  late http.Client _client;
+  late final http.Client _client;
+
+  http.Client get client => _client;
 
   /// URL base do webservice via_cep
   final String baseUrl = 'https://viacep.com.br/ws';
@@ -64,10 +66,10 @@ class ViaCepSearchCep {
     required String cep,
     SearchInfoType returnType = SearchInfoType.json,
   }) async {
-    if (cep.isEmpty || cep.length != 8) {
-      return left(const InvalidFormatError());
-    }
     try {
+      if (cep.isEmpty || cep.length != 8) {
+        return left(const InvalidFormatError());
+      }
       final uri = Uri.parse('$baseUrl/$cep/${getType(returnType)}');
       final response = await _client.get(uri);
       if (response.statusCode == ok) {

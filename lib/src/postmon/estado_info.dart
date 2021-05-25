@@ -3,7 +3,11 @@ class EstadoInfo {
   String? codigoIbge;
   String? nome;
 
-  EstadoInfo({this.areaKm2, this.codigoIbge, this.nome});
+  EstadoInfo({
+    this.areaKm2,
+    this.codigoIbge,
+    this.nome,
+  });
 
   EstadoInfo.fromJson(Map<String, dynamic> json) {
     areaKm2 = json['area_km2'] as String;

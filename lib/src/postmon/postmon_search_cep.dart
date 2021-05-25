@@ -9,11 +9,13 @@ import 'postmon_cep_info.dart';
 enum PostmonReturnType { json, xml }
 
 class PostmonSearchCep {
-  PostmonSearchCep({http.Client? client}) {
-    _client = client ?? http.Client();
-  }
+  PostmonSearchCep({
+    http.Client? client,
+  }) : _client = client ?? http.Client();
 
-  late http.Client _client;
+  late final http.Client _client;
+
+  http.Client get client => _client;
 
   /// URL base do webservice via_cep
   static const String baseUrl = 'https://api.postmon.com.br/v1/cep';
