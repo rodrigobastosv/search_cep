@@ -1,3 +1,6 @@
+## 4.0.0+1
+- Adjusting README
+
 ## 4.0.0
 - Fully migrating dependencies to null safety
 
