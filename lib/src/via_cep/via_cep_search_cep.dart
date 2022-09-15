@@ -77,7 +77,8 @@ class ViaCepSearchCep {
           case SearchInfoType.json:
             final decodedResponse =
                 jsonDecode(response.body) as Map<String, dynamic>;
-            if (decodedResponse['erro'] == true) {
+            if (decodedResponse['erro'] == true ||
+                decodedResponse['erro'] == 'true') {
               return left(const InvalidCepError());
             }
             return right(ViaCepInfo.fromJson(decodedResponse));

@@ -1,3 +1,6 @@
+## 4.0.1
+- Ajustando comparacao de erro
+
 ## 4.0.0+1
 - Adjusting README
 

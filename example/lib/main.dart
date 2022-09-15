@@ -1,5 +1,4 @@
 import 'package:search_cep/search_cep.dart';
-import 'package:search_cep/src/postmon/postmon_search_cep.dart';
 
 void main() async {
   final viaCepSearchCep = ViaCepSearchCep();
