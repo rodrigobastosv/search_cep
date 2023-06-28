@@ -16,12 +16,12 @@ void main() {
     late MockHttp mockHttp;
 
     setUpAll(() {
-      registerFallbackValue<Uri>(UriFake());
+      registerFallbackValue(UriFake());
       mockHttp = MockHttp();
       viaCepSearchCep = ViaCepSearchCep(
         client: mockHttp,
       );
-      registerFallbackValue<Uri>(Uri());
+      registerFallbackValue(Uri());
     });
 
     test('Should create a client when none is passed', () {
